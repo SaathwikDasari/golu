@@ -11,7 +11,7 @@ pub enum Token {
     Asterisk,
     Slash,
 
-    Semicolon,
+    SemiColon,
 
     EOF,
     Illegal,

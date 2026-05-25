@@ -37,7 +37,7 @@ impl Lexer {
 
         let tok = match self.ch {
             '=' => Token::Assign,
-            ';' => Token::Semicolon,
+            ';' => Token::SemiColon,
             '+' => Token::Plus,
             '-' => Token::Minus,
             '*' => Token::Asterisk,
@@ -90,5 +90,43 @@ impl Lexer {
         // For a toy compiler, unwrap() is fine here because we already guaranteed
         // the string only contains digits.
         num_str.parse::<i64>().unwrap()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::token::Token;
+    use super::*;
+
+    #[test]
+    fn test_next_token() {
+        let input = String::from("let x = 10; let y = x + 5;");
+
+        let expected_tokens = vec![
+            Token::Let,
+            Token::Ident(String::from("x")),
+            Token::Assign,
+            Token::Int(10),
+            Token::SemiColon,
+            Token::Let,
+            Token::Ident(String::from("y")),
+            Token::Assign,
+            Token::Ident(String::from("x")),
+            Token::Plus,
+            Token::Int(5),
+            Token::SemiColon,
+            Token::EOF,
+        ];
+
+        let mut lexer = Lexer::new(input);
+
+        for (i, expected) in expected_tokens.into_iter().enumerate() {
+            let tok = lexer.next_token();
+            assert_eq!(
+                tok, expected,
+                "Test failed at token {}: expected {:?}, got {:?}",
+                i, expected, tok
+            );
+        }
     }
 }
